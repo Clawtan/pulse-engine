@@ -1,0 +1,45 @@
+name: Pulse Engine Telemetry
+
+on:
+  schedule:
+    # 02:17, 06:17, 10:17, 14:17, 18:17 UTC
+    # = 09:17, 13:17, 17:17, 21:17, 01:17 WIB
+    - cron: '17 2,6,10,14,18 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  telemetry-pulse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python Runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Configure Git Identity
+        run: |
+          git config --global user.name "Clawtan"
+          git config --global user.email "azzariaalfin@gmail.com"
+
+      - name: Execute Stochastic Telemetry Engine
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python engine.py
+
+      - name: Push Telemetry State
+        run: |
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+            git push origin main
+            echo "Telemetry changes successfully pushed."
+          else
+            echo "No new telemetry changes to push."
+          fi
