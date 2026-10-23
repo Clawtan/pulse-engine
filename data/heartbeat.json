@@ -1,10 +1,10 @@
 {
-  "last_pulse": "2026-10-23T15:07:49.949872+00:00",
+  "last_pulse": "2026-10-23T15:07:53.956195+00:00",
   "status": "healthy",
   "node_id": "pulse-node-01",
-  "total_pulses": 65,
+  "total_pulses": 66,
   "telemetry": {
-    "latency_ms": 23.0,
-    "memory_pressure": "balanced"
+    "latency_ms": 22.5,
+    "memory_pressure": "nominal"
   }
 }
