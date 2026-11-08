@@ -9,12 +9,24 @@ def run():
     is_manual = os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
     now = datetime.now(timezone.utc)
     weekday = now.weekday()
-    
+    today_str = now.strftime("%Y-%m-%d")
+
+    file_path = "data/heartbeat.json"
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            initial_data = json.load(f)
+    except Exception:
+        initial_data = {}
+
+    last_pulse = str(initial_data.get("last_pulse", ""))
+    already_pulsed_today = last_pulse.startswith(today_str)
+
     # Stochastic rest probability for realistic human distribution
-    if not is_manual:
+    # Only allowed to rest if at least one pulse was already recorded today
+    if not is_manual and already_pulsed_today:
         threshold = 0.65 if weekday >= 5 else 0.85
         if random.random() > threshold:
-            print("[INFO] Stochastic rest interval triggered. Skipping pulse for natural distribution.")
+            print("[INFO] Already pulsed today. Stochastic rest interval triggered. Skipping pulse.")
             return
 
     # Random commit batch size: 1 to 3 pulses per run
@@ -24,8 +36,6 @@ def run():
         num_commits = max(1, num_commits)
 
     print(f"[INFO] Generating {num_commits} stochastic telemetry pulse(s)...")
-
-    file_path = "data/heartbeat.json"
     commit_actions = [
         "record node heartbeat checkpoint",
         "synchronize telemetry pulse state",

@@ -27,7 +27,7 @@ jobs:
       - name: Configure Git Identity
         run: |
           git config --global user.name "Clawtan"
-          git config --global user.email "azzariaalfin@gmail.com"
+          git config --global user.email "20448862+Clawtan@users.noreply.github.com"
 
       - name: Execute Stochastic Telemetry Engine
         env:
